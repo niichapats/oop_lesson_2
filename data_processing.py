@@ -89,56 +89,81 @@ class Table:
     def __str__(self):
         return self.table_name + ':' + str(self.table)
 
-table1 = Table('cities', cities)
-table2 = Table('countries', countries)
-table3 = Table('player', players)
-table4 = Table('team', teams)
-table5 =Table('titanic', titanic)
+# table1 = Table('cities', cities)
+# table2 = Table('countries', countries)
+# table3 = Table('player', players)
+# table4 = Table('team', teams)
+# table5 =Table('titanic', titanic)
+# my_DB = DB()
+# my_DB.insert(table1)
+# my_DB.insert(table2)
+# my_table1 = my_DB.search('cities')
+#
+# print("Test filter: only filtering out cities in Italy")
+# my_table1_filtered = my_table1.filter(lambda x: x['country'] == 'Italy')
+# print(my_table1_filtered)
+# print()
+#
+# print("Test select: only displaying two fields, city and latitude, for cities in Italy")
+# my_table1_selected = my_table1_filtered.select(['city', 'latitude'])
+# print(my_table1_selected)
+# print()
+#
+# print("Calculting the average temperature without using aggregate for cities in Italy")
+# temps = []
+# for item in my_table1_filtered.table:
+#     temps.append(float(item['temperature']))
+# print(sum(temps)/len(temps))
+# print()
+#
+# print("Calculting the average temperature using aggregate for cities in Italy")
+# print(my_table1_filtered.aggregate(lambda x: sum(x)/len(x), 'temperature'))
+# print()
+#
+# print("Test join: finding cities in non-EU countries whose temperatures are below 5.0")
+# my_table2 = my_DB.search('countries')
+# my_table3 = my_table1.join(my_table2, 'country')
+# my_table3_filtered = my_table3.filter(lambda x: x['EU'] == 'no').filter(lambda x: float(x['temperature']) < 5.0)
+# print(my_table3_filtered.table)
+# print()
+# print("Selecting just three fields, city, country, and temperature")
+# print(my_table3_filtered.select(['city', 'country', 'temperature']))
+# print()
+#
+# print("Print the min and max temperatures for cities in EU that do not have coastlines")
+# my_table3_filtered = my_table3.filter(lambda x: x['EU'] == 'yes').filter(lambda x: x['coastline'] == 'no')
+# print("Min temp:", my_table3_filtered.aggregate(lambda x: min(x), 'temperature'))
+# print("Max temp:", my_table3_filtered.aggregate(lambda x: max(x), 'temperature'))
+# print()
+#
+# print("Print the min and max latitude for cities in every country")
+# for item in my_table2.table:
+#     my_table1_filtered = my_table1.filter(lambda x: x['country'] == item['country'])
+#     if len(my_table1_filtered.table) >= 1:
+#         print(item['country'], my_table1_filtered.aggregate(lambda x: min(x), 'latitude'), my_table1_filtered.aggregate(lambda x: max(x), 'latitude'))
+# print()
+
+
+table1 = Table('Players', players)
+table2 = Table('Teams', teams)
 my_DB = DB()
 my_DB.insert(table1)
 my_DB.insert(table2)
-my_table1 = my_DB.search('cities')
+table3 = table1.join(table2, 'team')
 
-print("Test filter: only filtering out cities in Italy") 
-my_table1_filtered = my_table1.filter(lambda x: x['country'] == 'Italy')
-print(my_table1_filtered)
-print()
+table3_filtered1 = table3.filter(lambda x: 'ai' in x['team'])\
+    .filter(lambda x: int(x['minutes']) < 200)\
+    .filter(lambda x: int(x['passes']) > 100)
+table3.selected1 = table3.select(['surname', 'team', 'position'])
+print(table3.selected1)
 
-print("Test select: only displaying two fields, city and latitude, for cities in Italy")
-my_table1_selected = my_table1_filtered.select(['city', 'latitude'])
-print(my_table1_selected)
-print()
+table3_below10 = table3.filter(lambda x: int(x['ranking']) < 10).aggregate(lambda x: sum(x)/len(x), 'games')
+table3_above10 = table3.filter(lambda x: int(x['ranking']) >= 10).aggregate(lambda x: sum(x)/len(x), 'games')
+print(f'average number of games played for teams ranking below 10 : {table3_below10:.2f}')
+print(f'average number of games played for teams ranking above or equal 10 : {table3_above10:.2f}')
 
-print("Calculting the average temperature without using aggregate for cities in Italy")
-temps = []
-for item in my_table1_filtered.table:
-    temps.append(float(item['temperature']))
-print(sum(temps)/len(temps))
-print()
+table3_forwards = table3.filter(lambda x: x['position'] == 'forward').aggregate(lambda x: sum(x)/len(x), 'passes')
+table3_midfielders = table3.filter(lambda x: x['position'] == 'midfielder').aggregate(lambda x: sum(x)/len(x), 'passes')
+print(f'The average number of passes made by forwards : {table3_forwards:.2f}')
+print(f'The average number of passes made by midfielders : {table3_midfielders:.2f}')
 
-print("Calculting the average temperature using aggregate for cities in Italy")
-print(my_table1_filtered.aggregate(lambda x: sum(x)/len(x), 'temperature'))
-print()
-
-print("Test join: finding cities in non-EU countries whose temperatures are below 5.0")
-my_table2 = my_DB.search('countries')
-my_table3 = my_table1.join(my_table2, 'country')
-my_table3_filtered = my_table3.filter(lambda x: x['EU'] == 'no').filter(lambda x: float(x['temperature']) < 5.0)
-print(my_table3_filtered.table)
-print()
-print("Selecting just three fields, city, country, and temperature")
-print(my_table3_filtered.select(['city', 'country', 'temperature']))
-print()
-
-print("Print the min and max temperatures for cities in EU that do not have coastlines")
-my_table3_filtered = my_table3.filter(lambda x: x['EU'] == 'yes').filter(lambda x: x['coastline'] == 'no')
-print("Min temp:", my_table3_filtered.aggregate(lambda x: min(x), 'temperature'))
-print("Max temp:", my_table3_filtered.aggregate(lambda x: max(x), 'temperature'))
-print()
-
-print("Print the min and max latitude for cities in every country")
-for item in my_table2.table:
-    my_table1_filtered = my_table1.filter(lambda x: x['country'] == item['country'])
-    if len(my_table1_filtered.table) >= 1:
-        print(item['country'], my_table1_filtered.aggregate(lambda x: min(x), 'latitude'), my_table1_filtered.aggregate(lambda x: max(x), 'latitude'))
-print()

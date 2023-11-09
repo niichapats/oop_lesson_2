@@ -20,3 +20,4 @@ def gen_comb_list(list_set):
             for j in gen_comb_list(list_set[1:]):
                 list_comb.append([i] + j)
         return list_comb
+

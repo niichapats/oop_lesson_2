@@ -70,12 +70,24 @@ class Table:
                 filtered_table.table.append(item1)
         return filtered_table
     
+    def __is_float(self, element):
+        if element is None:
+            return False
+        try:
+            float(element)
+            return True
+        except ValueError:
+            return False
+
     def aggregate(self, function, aggregation_key):
         temps = []
         for item1 in self.table:
-            temps.append(float(item1[aggregation_key]))
+            if self.__is_float(item1[aggregation_key]):
+                temps.append(float(item1[aggregation_key]))
+            else:
+                temps.append(item1[aggregation_key])
         return function(temps)
-    
+
     def select(self, attributes_list):
         temps = []
         for item1 in self.table:
@@ -197,7 +209,13 @@ for i in titanic_male_sur.table:
 for j in titanic_female_sur.table:
     female_sur += 1
 
-print(f'The survival rate of male : {male_sur/male:.2f}')
-print(f'The survival rate of female : {female_sur/female:.2f}')
+# print(f'The survival rate of male : {male_sur/male:.2f}')
+# print(f'The survival rate of female : {female_sur/female:.2f}')
 
+titanic_male_southampton = titanic_male.filter(lambda x: x['embarked'] == 'Southampton')
+male_southampton = 0
 
+for s in titanic_male_southampton.table:
+    male_southampton += 1
+
+print(f'the total number of male passengers embarked at Southampton : {male_southampton}')

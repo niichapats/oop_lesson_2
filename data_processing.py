@@ -197,7 +197,13 @@ for i in titanic_male_sur.table:
 for j in titanic_female_sur.table:
     female_sur += 1
 
-print(f'The survival rate of male : {male_sur/male:.2f}')
-print(f'The survival rate of female : {female_sur/female:.2f}')
+# print(f'The survival rate of male : {male_sur/male:.2f}')
+# print(f'The survival rate of female : {female_sur/female:.2f}')
 
+titanic_male_southampton = titanic_male.filter(lambda x: x['embarked'] == 'Southampton')
+male_southampton = 0
 
+for s in titanic_male_southampton.table:
+    male_southampton += 1
+
+print(f'the total number of male passengers embarked at Southampton : {male_southampton}')

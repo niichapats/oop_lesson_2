@@ -144,26 +144,60 @@ class Table:
 # print()
 
 
-table1 = Table('Players', players)
-table2 = Table('Teams', teams)
-my_DB = DB()
-my_DB.insert(table1)
-my_DB.insert(table2)
-table3 = table1.join(table2, 'team')
+# table1 = Table('Players', players)
+# table2 = Table('Teams', teams)
+# my_DB = DB()
+# my_DB.insert(table1)
+# my_DB.insert(table2)
+# table3 = table1.join(table2, 'team')
+#
+# table3_filtered1 = table3.filter(lambda x: 'ai' in x['team'])\
+#     .filter(lambda x: int(x['minutes']) < 200)\
+#     .filter(lambda x: int(x['passes']) > 100)
+# table3.selected1 = table3.select(['surname', 'team', 'position'])
+# print(table3.selected1)
+#
+# table3_below10 = table3.filter(lambda x: int(x['ranking']) < 10).aggregate(lambda x: sum(x)/len(x), 'games')
+# table3_above10 = table3.filter(lambda x: int(x['ranking']) >= 10).aggregate(lambda x: sum(x)/len(x), 'games')
+# print(f'average number of games played for teams ranking below 10 : {table3_below10:.2f}')
+# print(f'average number of games played for teams ranking above or equal 10 : {table3_above10:.2f}')
+#
+# table3_forwards = table3.filter(lambda x: x['position'] == 'forward').aggregate(lambda x: sum(x)/len(x), 'passes')
+# table3_midfielders = table3.filter(lambda x: x['position'] == 'midfielder').aggregate(lambda x: sum(x)/len(x), 'passes')
+# print(f'The average number of passes made by forwards : {table3_forwards:.2f}')
+# print(f'The average number of passes made by midfielders : {table3_midfielders:.2f}')
 
-table3_filtered1 = table3.filter(lambda x: 'ai' in x['team'])\
-    .filter(lambda x: int(x['minutes']) < 200)\
-    .filter(lambda x: int(x['passes']) > 100)
-table3.selected1 = table3.select(['surname', 'team', 'position'])
-print(table3.selected1)
+# Titanic
+titanic_table = Table('Titanic', titanic)
+table4_fare_first = titanic_table.filter(lambda x: x['class'] == '1').aggregate(lambda x: sum(x) / len(x), 'fare')
+table4_fare_third = titanic_table.filter(lambda x: x['class'] == '3').aggregate(lambda x: sum(x) / len(x), 'fare')
+print(f'average fare paid by passengers in the first class : {table4_fare_first:.2f}')
+print(f'average fare paid by passengers in the third class : {table4_fare_third:.2f}')
 
-table3_below10 = table3.filter(lambda x: int(x['ranking']) < 10).aggregate(lambda x: sum(x)/len(x), 'games')
-table3_above10 = table3.filter(lambda x: int(x['ranking']) >= 10).aggregate(lambda x: sum(x)/len(x), 'games')
-print(f'average number of games played for teams ranking below 10 : {table3_below10:.2f}')
-print(f'average number of games played for teams ranking above or equal 10 : {table3_above10:.2f}')
 
-table3_forwards = table3.filter(lambda x: x['position'] == 'forward').aggregate(lambda x: sum(x)/len(x), 'passes')
-table3_midfielders = table3.filter(lambda x: x['position'] == 'midfielder').aggregate(lambda x: sum(x)/len(x), 'passes')
-print(f'The average number of passes made by forwards : {table3_forwards:.2f}')
-print(f'The average number of passes made by midfielders : {table3_midfielders:.2f}')
+titanic_male = titanic_table.filter(lambda x: x['gender'] == 'M')
+titanic_male_sur = titanic_male.filter(lambda x: x['survived'] == 'yes')
+titanic_female = titanic_table.filter(lambda x: x['gender'] == 'F')
+titanic_female_sur = titanic_female.filter(lambda x: x['survived'] == 'yes')
+
+male = 0
+female = 0
+male_sur = 0
+female_sur = 0
+
+for m in titanic_male.table:
+    male += 1
+
+for f in titanic_female.table:
+    female += 1
+
+for i in titanic_male_sur.table:
+    male_sur += 1
+
+for j in titanic_female_sur.table:
+    female_sur += 1
+
+print(f'The survival rate of male : {male_sur/male:.2f}')
+print(f'The survival rate of female : {female_sur/female:.2f}')
+
 

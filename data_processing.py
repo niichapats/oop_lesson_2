@@ -202,7 +202,6 @@ print(f'The average number of passes made by forwards : {table3_forwards:.2f}')
 print(f'The average number of passes made by midfielders : {table3_midfielders:.2f}')
 
 
-
 # Titanic task2
 titanic_table = Table('Titanic', titanic)
 table4_fare_first = titanic_table.filter(lambda x: x['class'] == '1').aggregate(lambda x: sum(x) / len(x), 'fare')
